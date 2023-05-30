@@ -1,7 +1,7 @@
 import { apiReq } from "@/server/utils";
 import { useState, useEffect } from "react";
 import Select from '@mui/material/Select';
-import { Box, MenuItem, ModalRoot } from "@mui/material";
+import { Box, MenuItem, ModalRoot, TextField } from "@mui/material";
 import { Button } from "@mui/material";
 import { FormControl } from "@mui/material";
 import { Typography } from "@mui/material";
@@ -56,6 +56,7 @@ const displayData = () => {
         console.log("Latest Data ", data)
         return data
     }
+
 
     const handleNodeChange = (e : any) => {
         e.preventDefault();
@@ -162,7 +163,6 @@ const displayData = () => {
         }
         
     }, [nodeValue]);
-    
 
     return (
         <Box sx={{m:10}}>
@@ -181,7 +181,7 @@ const displayData = () => {
 
             <Box sx={{mt:2}}>
                 {motorStatus?
-                    <Typography>Motor Staus: 
+                    <Typography>Motor Status: 
                         <span style={{ color: motorStatus["motor_status"]=="on" ? 'green' : 'red' }}>
                             {motorStatus["motor_status"]}
                         </span>
@@ -229,6 +229,7 @@ const displayData = () => {
                 {getUgsGraphValues()}
                 {getGraph(ugsDateList, ugsWaterConsumedList)} */}
             </Box>
+            <button className=""></button>
         </Box>
     );
 }
