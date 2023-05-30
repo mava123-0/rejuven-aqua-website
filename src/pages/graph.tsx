@@ -35,10 +35,9 @@ const getGraph = (x_data: Array<string>, y_data: Array<int>) => {
   console.log("x_data", x_data)
   console.log("y_data", y_data)
   return (
-    <div className="App" style={{width:'800px', height:'800px'}}>
-      <Typography>Water Consumption</Typography>
-      <Line data={data}
-      >
+    <div className="App" style={{width:'800px', height:'400px'}}>
+      {/* <Typography sx={{ fontWeight: 'bold' }}>Water Consumption</Typography> */}
+      <Line data={data}>
           Hello
       </Line>
     </div>
