@@ -5,6 +5,7 @@ import { Box, MenuItem, ModalRoot } from "@mui/material";
 import { Button } from "@mui/material";
 import { FormControl } from "@mui/material";
 import { Typography } from "@mui/material";
+import { Paper } from "@mui/material";
 import getGraph from "./graph";
 import { int } from "aws-sdk/clients/datapipeline";
 
@@ -165,32 +166,43 @@ const displayData = () => {
     
 
     return (
-        <Box sx={{m:10}}>
-            <FormControl>
-                <Select 
-                style={{ width: '1200px' }}
-                placeholder="Select Node" 
-                onChange={(event) => handleNodeChange(event)}
-                required>
-                    <MenuItem value="1">Node 1</MenuItem>
-                    <MenuItem value="2">Node 2</MenuItem>
-                    <MenuItem value="3">Node 3</MenuItem>
-                    <MenuItem value="4">Node 4</MenuItem>
-                </Select>
-            </FormControl>
+        <Box>
+            <Typography variant='h4' align="center" sx={{ fontWeight: 'bold' }}>REJUVEN AQUA</Typography>
+        <Paper elevation={10} sx={{ml:5, mr:5}}>
+        <Box sx={{m:5, p:3}}>
+            <Box sx={{ml:25}}>
+                <FormControl>
+                    <Select 
+                    style={{ width: '820px' }}
+                    onChange={(event) => handleNodeChange(event)}
+                    required>
+                        <MenuItem value="1">Node 1</MenuItem>
+                        <MenuItem value="2">Node 2</MenuItem>
+                        <MenuItem value="3">Node 3</MenuItem>
+                        <MenuItem value="4">Node 4</MenuItem>
+                    </Select>
+                </FormControl>
+            </Box>
 
-            <Box sx={{mt:2}}>
+            <Box sx={{mt:2, ml:25}}>
                 {motorStatus?
-                    <Typography>Motor Staus: 
+                    <Typography display={"flex"}>
+                        <Typography sx={{ fontWeight: 'bold' }}>
+                            Motor Status: 
+                        </Typography>
                         <span style={{ color: motorStatus["motor_status"]=="on" ? 'green' : 'red' }}>
                             {motorStatus["motor_status"]}
+                            <br />
                         </span>
-                </Typography>
+                    </Typography>
                     :
-                    <Typography>Select Node</Typography>
+                    <Typography sx={{ fontWeight: 'bold' }}>Select Node</Typography>
                 }
                 {ugsWaterLevel ?
-                        <Typography>Sump Water Level: 
+                        <Typography display={"flex"}>
+                            <Typography sx={{ fontWeight: 'bold' }}>
+                                Sump Water Level: 
+                            </Typography>
                             <span style={{ color: ugsWaterLevel['water_level']==0 ? 'red' : 'black' }}>
                                 {ugsWaterLevel['water_level']==2?" Half" : (ugsWaterLevel['water_level']==0?" Empty" : " Full")}
                             </span>
@@ -199,17 +211,32 @@ const displayData = () => {
                         null
                 }
                 {ohtWaterLevel ?
-                        <Typography>Overhead Tank Level: {ohtWaterLevel['water_level']==2?"Half" : (ohtWaterLevel['water_level']==0?"Empty" : "Full")}</Typography>
+                        <Typography display={"flex"}>
+                            <Typography sx={{ fontWeight: 'bold' }}>
+                                Overhead Tank Level: 
+                            </Typography>
+                            {ohtWaterLevel['water_level']==2?" Half" : (ohtWaterLevel['water_level']==0?" Empty" : " Full")}
+                        </Typography>
                         :
                         null
                 }
                 {ugsWaterConsumption ?
-                        <Typography>Sump Water Consumption: {ugsWaterConsumption['water_consumption']}</Typography>
+                        <Typography display={"flex"}>
+                            <Typography sx={{ fontWeight: 'bold' }}>
+                                Sump Consumption on {ugsWaterConsumption['date']}: {} 
+                            </Typography>
+                            {ugsWaterConsumption['water_consumption']}
+                        </Typography>
                         :
                         null
                 }
                 {ohtWaterConsumption ?
-                        <Typography>Overhead Tank Consumption on {ohtWaterConsumption['date']}: {ohtWaterConsumption['water_consumption']} </Typography>
+                        <Typography display={"flex"}>
+                            <Typography sx={{ fontWeight: 'bold' }}>
+                                Overhead Tank Consumption on {ohtWaterConsumption['date']}: {} 
+                            </Typography>
+                            {ohtWaterConsumption['water_consumption']} 
+                        </Typography>
                         :
                         null
                 }
@@ -224,11 +251,18 @@ const displayData = () => {
                 {getGraph(ohtDateList, ohtWaterConsumedList)}
             </Box>
 
-            <Box>
+            <Box sx={{mt:2}} 
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+            >
+                {/* TODO: SHOW UGS WATER CONSUMPTION */}
                 {/* <Typography>Underground Sump Water Consumption</Typography>
                 {getUgsGraphValues()}
                 {getGraph(ugsDateList, ugsWaterConsumedList)} */}
             </Box>
+        </Box>
+        </Paper>
         </Box>
     );
 }
