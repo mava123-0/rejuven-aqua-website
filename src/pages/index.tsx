@@ -1,7 +1,7 @@
 import { apiReq } from "@/server/utils";
 import { useState, useEffect } from "react";
 import Select from '@mui/material/Select';
-import { MenuItem, ModalRoot } from "@mui/material";
+import { Box, MenuItem, ModalRoot } from "@mui/material";
 import { Button } from "@mui/material";
 import { FormControl } from "@mui/material";
 import { Typography } from "@mui/material";
@@ -9,8 +9,10 @@ import getGraph from "./graph";
 import { int } from "aws-sdk/clients/datapipeline";
 
 const displayData = () => {
-    const [dateList, setDateList] = useState<Array<string>>([])
-    const [waterConsumedList, setWaterConsumedList] = useState<Array<int>>([])
+    const [ohtDateList, setOhtDateList] = useState<Array<string>>([])
+    const [ohtWaterConsumedList, setOhtWaterConsumedList] = useState<Array<int>>([])
+    const [ugsDateList, setUgsDateList] = useState<Array<string>>([])
+    const [ugsWaterConsumedList, setUgsWaterConsumedList] = useState<Array<int>>([])
 
     const [nodeValue, setNodeValue] = useState<String | null>(null)
     const [ohtId, setOhtId] = useState<String>("")
@@ -63,7 +65,7 @@ const displayData = () => {
         setUgsId(e.target.value + '_ugs')
     }
 
-    const getGraphValues = () => {
+    const getOhtGraphValues = () => {
         {scanIdData(ohtId as string, "swm_water_consumption")
             .then((result) => {
                 console.log("length", result.length)
@@ -74,10 +76,27 @@ const displayData = () => {
                     dateList.push(result[i]['date']);
                     consumptionList.push(result[i]['water_consumption']);
                 }
-                console.log("datelist", dateList)
-                console.log("consumptionList", consumptionList)
-                setDateList(dateList)
-                setWaterConsumedList(consumptionList)
+                setOhtDateList(dateList)
+                setOhtWaterConsumedList(consumptionList)
+            })
+            .catch((error) => {
+                console.error('Error fetching data:', error);
+        })}
+        return null
+    }
+    const getUgsGraphValues = () => {
+        {scanIdData(ugsId as string, "swm_water_consumption")
+            .then((result) => {
+                console.log("length", result.length)
+                var dateList: Array<string> = [];
+                var consumptionList : Array<int> = []
+
+                for (var i = 0; i < result.length; i++) {
+                    dateList.push(result[i]['date']);
+                    consumptionList.push(result[i]['water_consumption']);
+                }
+                setUgsDateList(dateList)
+                setUgsWaterConsumedList(consumptionList)
             })
             .catch((error) => {
                 console.error('Error fetching data:', error);
@@ -115,14 +134,6 @@ const displayData = () => {
                     .catch((error) => {
                         console.error('Error fetching data:', error);
                 })}
-                {scanIdData(ugsId as string, "swm_water_consumption")
-                    .then((result) => {
-                        console.log("SCAN ID ", result)
-                        console.log("SCAN ID date", result['date'])
-                    })
-                    .catch((error) => {
-                        console.error('Error fetching data:', error);
-                })}
                 </>
                 :
                 null
@@ -145,25 +156,6 @@ const displayData = () => {
                     .catch((error) => {
                         console.error('Error fetching data:', error);
                 })}
-
-                {/* {scanIdData(ohtId as string, "swm_water_consumption")
-                    .then((result) => {
-                        console.log("length", result.length)
-                        var dateList: Array<string> = [];
-                        var consumptionList : Array<int> = []
-
-                        for (var i = 0; i < result.length; i++) {
-                            dateList.push(result[i]['date']);
-                            consumptionList.push(result[i]['water_consumption']);
-                        }
-                        console.log("datelist", dateList)
-                        console.log("consumptionList", consumptionList)
-                        setDateList(dateList)
-                        setWaterConsumedList(consumptionList)
-                    })
-                    .catch((error) => {
-                        console.error('Error fetching data:', error);
-                })} */}
                 </>
                 :
                 null
@@ -173,64 +165,71 @@ const displayData = () => {
     
 
     return (
-        <div>
-        <FormControl>
-            <Select 
-            placeholder="Select Node" 
-            onChange={(event) => handleNodeChange(event)}
-            // onChange={(event) => setNodeValue(event.target.value as String)}
-            required>
-                <MenuItem value="1">Node 1</MenuItem>
-                <MenuItem value="2">Node 2</MenuItem>
-                <MenuItem value="3">Node 3</MenuItem>
-                <MenuItem value="4">Node 4</MenuItem>
-            </Select>
-        </FormControl>
+        <Box sx={{m:10}}>
+            <FormControl>
+                <Select 
+                style={{ width: '1200px' }}
+                placeholder="Select Node" 
+                onChange={(event) => handleNodeChange(event)}
+                required>
+                    <MenuItem value="1">Node 1</MenuItem>
+                    <MenuItem value="2">Node 2</MenuItem>
+                    <MenuItem value="3">Node 3</MenuItem>
+                    <MenuItem value="4">Node 4</MenuItem>
+                </Select>
+            </FormControl>
 
-        {motorStatus?
-            <Typography>Motor Staus: 
-                <span style={{ color: motorStatus["motor_status"]=="on" ? 'green' : 'red' }}>
-                    {motorStatus["motor_status"]}
-                </span>
-          </Typography>
-            :
-            <Typography>Select Node</Typography>
-        }
-        {ugsWaterLevel ?
-                <Typography>Sump Water Level: 
-                    <span style={{ color: ugsWaterLevel['water_level']==0 ? 'red' : 'black' }}>
-                        {ugsWaterLevel['water_level']==2?" Half" : (ugsWaterLevel['water_level']==0?" Empty" : " Full")}
-                    </span>
+            <Box sx={{mt:2}}>
+                {motorStatus?
+                    <Typography>Motor Staus: 
+                        <span style={{ color: motorStatus["motor_status"]=="on" ? 'green' : 'red' }}>
+                            {motorStatus["motor_status"]}
+                        </span>
                 </Typography>
-                :
-                null
-        }
-        {ohtWaterLevel ?
-                <Typography>Overhead Tank Level: {ohtWaterLevel['water_level']==2?"Half" : (ohtWaterLevel['water_level']==0?"Empty" : "Full")}</Typography>
-                :
-                null
-        }
-        {ugsWaterConsumption ?
-                <Typography>Sump Water Consumption: {ugsWaterConsumption['water_consumption']}</Typography>
-                :
-                null
-        }
-        {ohtWaterConsumption ?
-                <Typography>Overhead Tank Consumption on {ohtWaterConsumption['date']}: {ohtWaterConsumption['water_consumption']} </Typography>
-                :
-                null
-        }
-        <Button onClick={() => getGraphValues()}>Show Graph</Button>
-        {/* {(dateList && waterConsumedList)?
-            <> */}
-                {getGraph(dateList, waterConsumedList)}
-                {/* {console.log("date: ", dateList)}
-                {console.log("water cons: ", waterConsumedList)} */}
-            {/* </>
-            :
-            null
-        } */}
-        </div>
+                    :
+                    <Typography>Select Node</Typography>
+                }
+                {ugsWaterLevel ?
+                        <Typography>Sump Water Level: 
+                            <span style={{ color: ugsWaterLevel['water_level']==0 ? 'red' : 'black' }}>
+                                {ugsWaterLevel['water_level']==2?" Half" : (ugsWaterLevel['water_level']==0?" Empty" : " Full")}
+                            </span>
+                        </Typography>
+                        :
+                        null
+                }
+                {ohtWaterLevel ?
+                        <Typography>Overhead Tank Level: {ohtWaterLevel['water_level']==2?"Half" : (ohtWaterLevel['water_level']==0?"Empty" : "Full")}</Typography>
+                        :
+                        null
+                }
+                {ugsWaterConsumption ?
+                        <Typography>Sump Water Consumption: {ugsWaterConsumption['water_consumption']}</Typography>
+                        :
+                        null
+                }
+                {ohtWaterConsumption ?
+                        <Typography>Overhead Tank Consumption on {ohtWaterConsumption['date']}: {ohtWaterConsumption['water_consumption']} </Typography>
+                        :
+                        null
+                }
+            </Box>
+
+            <Box sx={{mt:2}} 
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+            >
+                {getOhtGraphValues()}
+                {getGraph(ohtDateList, ohtWaterConsumedList)}
+            </Box>
+
+            <Box>
+                {/* <Typography>Underground Sump Water Consumption</Typography>
+                {getUgsGraphValues()}
+                {getGraph(ugsDateList, ugsWaterConsumedList)} */}
+            </Box>
+        </Box>
     );
 }
 
