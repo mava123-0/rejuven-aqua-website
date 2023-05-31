@@ -74,3 +74,133 @@ export const scanIdData = async (id : String, tableName : String) => {
         return (err)
       }
 }
+//anish
+export const fetchMaxMotorStatusOn = async (id: string,date: string, tableName: string) => {
+  console.log("Fetching Maximum Motor Status 'on' for each unique id on", date, "from table", tableName);
+
+  const params = {
+    TableName: tableName,
+    KeyConditionExpression: '#id = :id AND #time > :time',
+    FilterExpression: 'motor_status = :status AND #date = :date',
+    ExpressionAttributeNames: {
+      '#id': 'id',
+      '#date': 'date',
+      '#time': 'time',
+    },
+    ExpressionAttributeValues: {
+      ':id': id,
+      ':date': date,
+      ':time': 0,
+      ':status': 'On',
+    },
+    ProjectionExpression: 'id, motor_status',
+  };
+
+  try {
+    const data = await docClient.query(params).promise();
+    const idCounts: { [id: string]: number } = {};
+
+    if (data.Items) {
+      data.Items.forEach((item) => {
+        const id = item.id;
+        if (idCounts[id]) {
+          idCounts[id]++;
+        } else {
+          idCounts[id] = 1;
+        }
+      });
+
+      const maxCounts: { [count: number]: string[] } = {};
+      Object.keys(idCounts).forEach((id) => {
+        const count = idCounts[id];
+        if (maxCounts[count]) {
+          maxCounts[count].push(id);
+        } else {
+          maxCounts[count] = [id];
+        }
+      });
+
+      console.log("Maximum Motor Status 'on' for each unique id:", maxCounts);
+      return maxCounts;
+    }
+  } catch (err) {
+    console.error('Error querying table:', err);
+    return err;
+  }
+};
+export const fetchWaterConsumptionSum = async (id: string, date: string, tableName: string) => {
+  console.log("Fetching Water Consumption sum for id:", id, "on date:", date, "from table:", tableName);
+
+  const params = {
+    TableName: tableName,
+    KeyConditionExpression: '#id = :id AND #time > :time',
+    FilterExpression: 'attribute_exists(water_consumption) AND #date = :date',
+    ExpressionAttributeNames: {
+      '#id': 'id',
+      '#date': 'date',
+      '#time': 'time',
+    },
+    ExpressionAttributeValues: {
+      ':id': id,
+      ':date': date,
+      ':time': 0,
+    },
+    ProjectionExpression: 'water_consumption',
+  };
+
+  try {
+    const data = await docClient.query(params).promise();
+
+    if (data.Items) {
+      let sum = 0;
+      data.Items.forEach((item) => {
+        const waterConsumption = item.water_consumption;
+        if (typeof waterConsumption === 'number') {
+          sum += waterConsumption;
+        }
+      });
+
+      console.log("Water Consumption sum for id:", id, "on date:", date, "is", sum);
+      return [sum,id];
+    }
+  } catch (err) {
+    console.error('Error querying table:', err);
+    return err;
+  }
+};
+export const fetchWaterConsumptionTillNow = async (id: string, tableName: string) => {
+  console.log("Fetching Water Consumption sum for id:", id, "from table:", tableName);
+
+  const params = {
+    TableName: tableName,
+    KeyConditionExpression: '#id = :id',
+    FilterExpression: 'attribute_exists(water_consumption)',
+    ExpressionAttributeNames: {
+      '#id': 'id',
+    },
+    ExpressionAttributeValues: {
+      ':id': id,
+    },
+    ProjectionExpression: 'water_consumption',
+  };
+
+  try {
+    const data = await docClient.query(params).promise();
+
+    if (data.Items) {
+      let sum = 0;
+      data.Items.forEach((item) => {
+        const waterConsumption = item.water_consumption;
+        if (typeof waterConsumption === 'number') {
+          sum += waterConsumption;
+        }
+      });
+
+      console.log("Water Consumption sum for id:", id, "is", sum);
+      return [sum,id];
+    }
+  } catch (err) {
+    console.error('Error querying table:', err);
+    return err;
+  }
+};
