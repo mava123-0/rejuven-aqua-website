@@ -11,6 +11,7 @@ import { AspectRatio } from '@mui/joy';
 
 const displayStuff = () => {
   const [selectedDate, setSelectedDate] = useState("");
+  const [anotherDate, setanotherDate] = useState("");
   const [inputter, selectInputter] = useState<any>("");
   const [maxwater, setMaxWater] = useState<any>("");
   const [maxmotor, setMaxMotor] = useState<any>("");
@@ -77,8 +78,8 @@ const displayStuff = () => {
                   id="outlined-basic"
                   label="Enter the date"
                   variant="outlined"
-                  value={selectedDate}
-                  onChange={(e) => setSelectedDate(e.target.value)}
+                  value={anotherDate}
+                  onChange={(e) => setanotherDate(e.target.value)}
                 />
               </FormControl>
             </AspectRatio>
