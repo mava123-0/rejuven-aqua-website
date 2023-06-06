@@ -1,3 +1,7 @@
+## About the Website
+This website provides a comprehensive view of a Smart Water Grid System, which comprises four underground sumps and four overhead tanks. It displays the water levels of each paired sump and tank, as well as the status of the motors connecting them. The website retrieves this information from AWS DynamoDB, which serves as the central database for all system data. It operates as a server-based website, utilizing backend queries to interact with DynamoDB.
+
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
