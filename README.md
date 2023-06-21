@@ -8,6 +8,7 @@ Tools Used:
 * Next.js
 
 **Sample Screenshots**
+
 <img width="726" alt="Screenshot 2023-05-31 170952" src="https://github.com/mava123-0/rejuven-aqua-website/assets/83857943/7d382740-2db2-4559-ba84-e58481599766">
 
 <img width="726" alt="Screenshot 2023-05-31 170017" src="https://github.com/mava123-0/rejuven-aqua-website/assets/83857943/2bf22cff-1140-48b9-b0cb-5b3cd8d72007">
